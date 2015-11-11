@@ -1,0 +1,29 @@
+.clear, #html_import p.submit, #html_import .wrap p, #html_import .wrap h3, p.htmlimportfloat.clear, div#tips { clear: both; } 	
+.wrap h4 { margin: 1em 0 0; }
+kbd { display: inline; } 
+p.htmlimportfloat { float: left; width: 15em; margin-right: 2em; clear: none; } 
+p.widefloat { width: 31.4em; } 	
+input.widefloat { width: 48.5em; } 	
+#content-region, #title-region, #taxonomy { width: 100%; height: 8em; z-index: 10; }
+#content-switch, #title-switch, #type-switch { position: relative; height: 8em; }
+#content-region, #title-region, .clean-region { display: none; }
+div.taxochecklistbox { float: left; margin: 1em 1em 1em 0; }
+ul.taxochecklist { height: 15em; width: 20em; overflow-y: scroll; border: 1px solid #dfdfdf; padding: 0 1em; background: #fff; border-radius: 4px; -moz-border-radius: 4px; -webkit-border-radius: 4px; }
+ul.taxochecklist ul.children { margin-left: 1em; }
+p.taxoinput { float: left; margin: 1em 1em 1em 0; width: 22.2em; }
+p.taxoinput input { width: 100%; }
+td.taginput { width: 33%; vertical-align: top; }
+.clean-region th { text-indent: 2em; }
+#customfields th, #customfields td { vertical-align: top; }
+#customfields th { width: auto; }
+#customfields tbody th { text-align: center; }
+#customfields tbody th h4 { text-align: left; }
+tr.clone:nth-child(odd) th, tr.clone:nth-child(odd) td { background-color: #fff }
+body.settings_page_html-import #footer { display: none; }
+/* jQuery tabs */
+.ui-tabs-nav { margin: 0; padding: 0; }
+.ui-tabs-nav li { display: inline; }
+.ui-tabs-nav li a { color: #aaa; }
+ul.ui-tabs-nav li.ui-tabs-active a.nav-tab { border-bottom: 1px solid #fff; color: #464646; }
+.ui-tabs-panel, .ui-tabs { clear: both; }
+.wrap h3, a.button-secondary.hidden { display: none; }

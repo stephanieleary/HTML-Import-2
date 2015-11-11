@@ -3,7 +3,7 @@
 Plugin Name: HTML Import 2
 Plugin URI: http://sillybean.net/code/wordpress/html-import/
 Description: Imports well-formed static HTML files into WordPress posts or pages. Supports Dreamweaver templates and Word HTML cleanup. Visit the settings page to get started. See the <a href="http://sillybean.net/code/wordpress/html-import-2/user-guide/">User Guide</a> for details.
-Version: 2.5.1
+Version: 2.6
 Author: Stephanie Leary
 Author URI: http://sillybean.net/
 License: GPL 2
@@ -11,6 +11,7 @@ License: GPL 2
 
 require_once ( 'html-importer.php' );
 require_once ( 'html-import-options.php' );
+require_once ( 'html-import-cron.php' );
 
 // plugin_activation_check() by Otto
 function html_import_activation_check() {
@@ -20,6 +21,35 @@ function html_import_activation_check() {
 	}
 }
 register_activation_hook( __FILE__, 'html_import_activation_check' );
+
+// set up scheduled jobs
+register_activation_hook( dirname ( __FILE__ ), 'html_import_cron_activate' );
+register_deactivation_hook( dirname ( __FILE__ ), 'html_import_cron_deactivate' );
+//add_action( 'html_import_schedule', 'html_import_cron_run' );
+/*
+function html_import_cron_activate() {
+	$options = html_import_get_options();
+	
+	if ( '1' == $options['cron'] && !wp_next_scheduled( 'html_import_schedule' ) ) {
+		wp_schedule_event( time(), 'daily', 'html_import_schedule' );
+	}
+}
+
+function html_import_cron_deactivate() {
+	wp_clear_scheduled_hook( 'html_import_schedule' );
+}
+
+function html_import_do_cron() {
+	require_once ( 'html-importer.php' );
+	load_importer_api();
+	$html_import = new HTML_Import();
+	$html_import->cron_import();
+}
+
+add_action( 'html_import_schedule', 'html_import_do_cron' );
+/**/
+//$html_import = new HTML_Import();
+//add_action( 'html_import_schedule', array( $html_import, 'cron_import' ) );
 
 // i18n
 load_plugin_textdomain( 'html_import', false, plugin_dir_path( __FILE__ ) . '/languages' );

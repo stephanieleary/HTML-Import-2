@@ -8,6 +8,8 @@ function html_import_get_options() {
 		'file_extensions' => 'html,htm,shtml',
 		'skipdirs' => __( 'images,includes,Templates', 'import-html-pages' ),
 		'preserve_slugs' => 0,
+		'cron' => 0,
+		'cron_user' => 0,
 		'status' => 'publish',
 		'root_parent' => 0,
 		'type' => 'page',
@@ -62,6 +64,23 @@ function html_import_options_page() { ?>
 			settings_fields( 'html_import' );
 			get_settings_errors( 'html_import' );	
 			$options = html_import_get_options();
+			
+			// Add cron job if that option has been set; if not, clear this plugin from the cron schedule
+			if ( '1' == $options['cron'] && !wp_next_scheduled( 'html_import_schedule' ) ) {
+				wp_schedule_event( time(), 'daily', 'html_import_schedule' );
+			}
+			if ( !isset( $options['cron'] ) || '0' == $options['cron'] ) {
+				wp_clear_scheduled_hook( 'html_import_schedule' );
+			}
+			
+			html_import_cron_run_2();
+			
+			//require_once( dirname ( __FILE__ )."/html-importer.php" );
+			//list_hooks('html_import_schedule');
+			//$html_import = new HTML_Import();
+			//$html_import->cron_run();
+			
+			// DEBUG
 			//$msg .= '<pre>'. print_r( $options, true ) .'</pre>';
 			//echo esc_html( $msg );
 			?>
@@ -156,6 +175,15 @@ function html_import_options_page() { ?>
 						<span class="description">
 						<?php _e( "The slug will not include the file extension. To completely mimic your old URLs, add the extension to your permalink structure.", 'import-html-pages' ); ?>
 						</span>
+					</p></td>
+		        </tr>
+		
+				<tr valign="top">
+			        <th scope="row"><?php _e( "Cron job", 'import-html-pages' ); ?></th>
+			        <td><p>
+				
+						<label><input name="html_import[cron]" id="cron" value="1" type="checkbox" <?php checked( $options['cron'] ); ?> /> 
+							 <?php _e( "Run this import as a daily cron job using saved settings", 'import-html-pages' ); ?></label>
 					</p></td>
 		        </tr>
 		    </table>
@@ -870,16 +898,20 @@ function html_import_validate_options( $input ) {
 	if ( $input['meta_desc'] > 1 ) $input['meta_desc'] = 1;
 	$input['title_inside'] = absint( $input['title_inside'] );
 	if ( $input['title_inside'] > 1 ) $input['title_inside'] = 0;
-
+	$input['cron'] = absint( $input['cron'] );
+	if ( $input['cron'] > 1 ) $input['cron'] = 0;
 	
 	// see if this is a real user
 	$input['user'] = absint( $input['user'] );
 	$user_info = get_userdata( $input['user'] );
 	if ( $user_info === false ) {
 		$msg[] = "The author you specified does not exist.";
-		$currentuser = wp_get_current_user();
-		$input['user'] = $currentuser->ID;
+		$input['user'] = get_current_user_id();
 	}
+		
+	// set cron user to current user if cron option is set
+	if ( $input['cron'] == '1' )
+		$input['cron_user'] = get_current_user_id();
 		
 	// If settings have been saved at least once, we can turn this off.
 	$input['firstrun'] = false;

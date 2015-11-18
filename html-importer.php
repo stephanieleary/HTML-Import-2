@@ -227,7 +227,7 @@ class HTML_Import extends WP_Importer {
 		$string = preg_replace( "/<[^\/>]*>( [\s]? )*<\/[^>]*>/", ' ', $string );
 		// get rid of remaining newlines; basic HTML cleanup
 		$string = str_replace( '&#13;', ' ', $string ); 
-		$string = ereg_replace( "[\n\r]", " ", $string ); 
+		$string = preg_replace( "[\n\r]", " ", $string );
 		$string = preg_replace_callback( '|<( /?[A-Z]+ )|', create_function( '$match', 'return "<" . strtolower( $match[1] );' ), $string );
 		$string = str_replace( '<br>', '<br />', $string );
 		$string = str_replace( '<hr>', '<hr />', $string );
@@ -357,7 +357,7 @@ class HTML_Import extends WP_Importer {
 			$my_post['post_author'] = $options['user'];
 		}
 		else {
-			set_magic_quotes_runtime( 0 );
+			ini_set('magic_quotes_runtime', 0);
 			$doc = new DOMDocument();
 			$doc->strictErrorChecking = false; // ignore invalid HTML, we hope
 			$doc->preserveWhiteSpace = false;  

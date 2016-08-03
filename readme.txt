@@ -5,8 +5,8 @@ Text Domain: html_import
 Domain Path: /languages
 Tags: import, pages, static files, taxonomies, taxonomy, dreamweaver, Word, FrontPage
 Requires at least: 3.0
-Tested up to: 4.1
-Stable tag: 2.5.1
+Tested up to: 4.6
+Stable tag: 2.6
 
 Imports well-formed HTML files into WordPress pages. 
 
@@ -95,6 +95,11 @@ No. The files must be on the same server as your WordPress installation. I have 
 
 == Changelog ==
 
+= 2.6 =
+* Removed ancient magic runtime quotes call, wow.
+* Checking for empty string instead of empty() to allow for directories named '0' or similar
+* Bail out earlier if XML can't be loaded, to avoid fatal errors
+* More efficient link rewriting
 = 2.5.1 =
 * Fixed warnings and notices related to the custom category walker.
 * Fixed bug where the page parent option displayed incorrectly in sites with no published pages.

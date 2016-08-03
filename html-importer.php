@@ -98,7 +98,8 @@ class HTML_Import extends WP_Importer {
 		// reverse the array so we start at the root -- this way the parents can be found when we search in $this->get_post
 		$parentarr = array_reverse( $parentarr );
 		
-//		echo '<pre>'.print_r( $parentarr, true ).'</pre>';
+		// DEBUG
+		// echo '<pre>'.print_r( $parentarr, true ).'</pre>';
 		
 		foreach ( $parentarr as $parentdir ) {
 			$parentID = array_search( $parentdir, $this->filearr );
@@ -169,11 +170,17 @@ class HTML_Import extends WP_Importer {
 					}
 			
 					$linkpath = rtrim( $linkpath, '/' );
+					// DEBUG
 					//echo '<p>Old link: '.$href.' Full path: '.$linkpath;
+					
 					// now replace the old URL with the new permalink
 					$postkey = array_search( $linkpath, $this->filearr );
+					
+					// DEBUG
 					//echo ' Post ID:'.$postkey.'.</p>';
 					if ( !empty( $postkey ) ) {
+						
+						// DEBUG
 						//echo '<p>I think '.$linkpath.' has moved to '.get_permalink( $postkey ).'.</p>';
 						$content = str_replace( $href, get_permalink( $postkey ), $content );
 					}
@@ -223,11 +230,10 @@ class HTML_Import extends WP_Importer {
 	        ),$string );
 	    }
 		// reduce line breaks and remove empty tags
-		$string = str_replace( '\n', ' ', $string ); 
+		$string = str_replace( array( "\n", "\r", "\t" ), '', $string );
 		$string = preg_replace( "/<[^\/>]*>( [\s]? )*<\/[^>]*>/", ' ', $string );
 		// get rid of remaining newlines; basic HTML cleanup
 		$string = str_replace( '&#13;', ' ', $string ); 
-		$string = ereg_replace( "[\n\r]", " ", $string ); 
 		$string = preg_replace_callback( '|<( /?[A-Z]+ )|', create_function( '$match', 'return "<" . strtolower( $match[1] );' ), $string );
 		$string = str_replace( '<br>', '<br />', $string );
 		$string = str_replace( '<hr>', '<hr />', $string );
@@ -254,7 +260,6 @@ class HTML_Import extends WP_Importer {
 	}
 	
 	function get_single_file( $txt = false ) {
-		set_magic_quotes_runtime( 0 );
 		$importfile = file( $this->file ); // Read the file into an array
 		$importfile = implode( '', $importfile ); // squish it
 		// this strips whitespace out of <pre>. Need to find a better way to handle that. For now, leave it alone.
@@ -300,9 +305,6 @@ class HTML_Import extends WP_Importer {
 					$filename_parts = pathinfo( $file );
 					if ( isset( $filename_parts['extension'] ) )
 						$ext = strtolower( $filename_parts['extension'] );
-					/*
-					$ext = strrchr( $file,'.' );
-					/**/
 					$ext = trim( $ext,'.' ); // dratted double dots
 					if ( !empty( $ext ) ) $exts[] .= $ext;
 				}
@@ -357,7 +359,6 @@ class HTML_Import extends WP_Importer {
 			$my_post['post_author'] = $options['user'];
 		}
 		else {
-			set_magic_quotes_runtime( 0 );
 			$doc = new DOMDocument();
 			$doc->strictErrorChecking = false; // ignore invalid HTML, we hope
 			$doc->preserveWhiteSpace = false;  
@@ -369,6 +370,9 @@ class HTML_Import extends WP_Importer {
 			else
 				@$doc->loadHTML( $this->file );
 			$xml = @simplexml_import_dom( $doc );
+			// bail out if we got no XML to work with
+			if ( $xml === NULL )
+			    return;
 			// avoid asXML errors when it encounters character range issues
 			libxml_clear_errors();
 			libxml_use_internal_errors( false );
@@ -431,12 +435,13 @@ class HTML_Import extends WP_Importer {
 			if ( !empty( $remove ) )
 				$my_post['post_title'] = str_replace( $remove, '', $my_post['post_title'] );
 			
+			// DEBUG
 			//echo '<pre>'.$my_post['post_title'].'</pre>'; exit;
 			
 			// slug
 			if ( isset( $options['preserve_slugs'] ) && '1' == $options['preserve_slugs'] ) {
 				// there is no path when we're working with a single uploaded file instead of a directory
-				if ( empty( $path ) ) 
+				if ( '' == trim( $path ) )
 					$filename = $this->filename;
 				else
 					$filename = basename( $path );
@@ -447,7 +452,7 @@ class HTML_Import extends WP_Importer {
 			$my_post['post_type'] = $options['type'];
 		
 			if ( is_post_type_hierarchical( $my_post['post_type'] ) ) {
-				if ( empty( $path ) ) 
+				if ( '' == trim( $path ) ) 
 					$my_post['post_parent'] = $options['root_parent'];
 				else {
 					$parentdir = rtrim( $this->parent_directory( $path ), '/' );
@@ -594,8 +599,10 @@ class HTML_Import extends WP_Importer {
 		}
 		
 		// if it's a single file, we can use a substitute for $path from here on
-		if ( empty( $path ) ) $handle = __( "the uploaded file", 'import-html-pages' );
-		else $handle = $path;
+		if ( '' == trim( $path ) )
+		 	$handle = __( "the uploaded file", 'import-html-pages' );
+		else 
+			$handle = $path;
 		
 		// see if the post already exists
 		// but don't bother printing this message if we're doing an index file; we know its parent already exists
@@ -610,11 +617,38 @@ class HTML_Import extends WP_Importer {
 				$updatepost = true;
 		}
 		
+		// find old path
+		if ( '' !== trim( $path ) && !$updatepost ) {
+			$url = esc_url( $options['old_url'] );
+			$url = rtrim( $url, '/' );
+			if ( !empty( $url ) ) 
+				$old_path = str_replace( $options['root_directory'], $url, $path );
+			else $old_path = $path;
+		}
+		
+		// see if this file has been previously imported based on path
+		$previous_import = get_posts( 
+			array (
+				'post_type' => $my_post['post_type'],
+				'meta_key' => 'URL_before_HTML_Import',
+				'meta_value' => $old_path,
+				'posts_per_page' => 1
+			)
+		);
+		
+		// if so, set to update instead of import
+		if ( !is_wp_error( $previous_import ) && !empty( $previous_import ) 
+		 		&& $previous_import->post_title = $my_post['post_title'] ) {
+			$post_id = $previous_import->ID;
+			$updatepost = true;
+		}
+		
+		// insert or update post
 		if ( $updatepost ) { 
 			$my_post['ID'] = $post_id; 
 			wp_update_post( $my_post );
 		}
-		else // insert new post
+		else 
 			$post_id = wp_insert_post( $my_post );
 		
 		// handle errors
@@ -647,15 +681,10 @@ class HTML_Import extends WP_Importer {
 		if ( isset( $options['page_template'] ) && !empty( $options['page_template'] ) )
 			add_post_meta( $post_id, '_wp_page_template', $options['page_template'], true ); 
 		
-		// create redirects from old and new paths; store old path in custom field
-		if ( !empty( $path ) && !$updatepost ) {
-			$url = esc_url( $options['old_url'] );
-			$url = rtrim( $url, '/' );
-			if ( !empty( $url ) ) 
-				$old = str_replace( $options['root_directory'], $url, $path );
-			else $old = $path;
-			$this->redirects .= "Redirect\t".$old."\t".get_permalink( $post_id )."\t[R=301,NC,L]\n";
-			add_post_meta( $post_id, 'URL_before_HTML_Import', $old, true );
+		// add redirects from old to new path; store old path in custom field
+		if ( '' !== trim( $old_path ) && !$updatepost ) {
+			$this->redirects .= "Redirect\t".$old_path."\t".get_permalink( $post_id )."\t[R=301,NC,L]\n";
+			add_post_meta( $post_id, 'URL_before_HTML_Import', $old_path, true );
 		}
 		
 		// store path so we can check for parents later ( even if it's empty; need that info for image imports ). 
@@ -667,7 +696,7 @@ class HTML_Import extends WP_Importer {
 		}
 		
 		// create the results table row AFTER fixing hierarchy
-		if ( !empty( $path ) ) {
+		if ( '' !== trim($path ) ) {
 			if ( empty( $my_post['post_title'] ) )
 				$my_post['post_title'] = __( '( no title )', 'html-import' );
 			$this->table[$post_id] = " <tr><th>".$post_id."</th><td>".$path."</td><td>".get_permalink( $post_id ).'</td><td>
@@ -692,22 +721,13 @@ class HTML_Import extends WP_Importer {
 			if ( ! ( ( $uploads = wp_upload_dir( $time ) ) && false === $uploads['error'] ) )
 				return new WP_Error( 'upload_error', $uploads['error'] );
 
-// this security check is pointless. It gives false positives, and anyone running this importer can unfiltered_upload anyway.
-/*
-			$wp_filetype = wp_check_filetype( $file, null );
-
-			extract( $wp_filetype );
-	
-			if ( ( !$type || !$ext ) && !current_user_can( 'unfiltered_upload' ) )
-				return new WP_Error( 'wrong_file_type', __( 'Sorry, this file type is not permitted for security reasons.' ) );
-/**/
-
 			$filename = wp_unique_filename( $uploads['path'], basename( $file ) );
 
 			// copy the file to the uploads dir
 			$new_file = $uploads['path'] . '/' . $filename;
 			if ( false === @copy( $file, $new_file ) )
 				return new WP_Error( 'upload_error', sprintf( __( 'Could not find the right path to %s ( tried %s ). It could not be imported. Please upload it manually.', 'html-import-pages' ), basename( $file ), $file ) );
+		//  DEBUG
 		//	else
 		//	 	printf( __( '<br /><em>%s</em> is being copied to the uploads directory as <em>%s</em>.', 'html-import-pages' ), $file, $new_file );
 	
@@ -897,15 +917,18 @@ class HTML_Import extends WP_Importer {
 						// we need to know where we are in the hierarchy 
 						$oldpath = get_post_meta( $id, 'URL_before_HTML_Import', true );
 						$oldpath = str_replace( $site, $rootdir, $oldpath );
+						// DEBUG
 						//echo '<p>Old path: '.$oldpath;
 						$oldfile = strrchr( $oldpath, '/' );
 						$linkpath = str_replace( $oldfile, '/'.$href, $oldpath );
 						$linkpath = $this->remove_dot_segments( $linkpath );
+						// DEBUG
 						//echo ' Link path: '.$linkpath . '</p>';
 					}
 			
 					if ( !empty( $linkpath ) ) {  // then we found an internal link
 						$linkpath = rtrim( $linkpath, '/' );
+						// DEBUG
 						//echo '<p>Old link: '.$href.' Full path: '.$linkpath;
 						
 						$filename_parts = explode( ".",$linkpath );
@@ -967,6 +990,7 @@ class HTML_Import extends WP_Importer {
 		<h3><?php _e( 'All done!', 'import-html-pages' ); ?></h3>
 		<?php }
 		else _e( 'No posts were found with the URL_before_HTML_Import custom field. Could not search for links.', 'import-html-pages' );
+		// DEBUG
 		//echo '<pre>'.print_r( $this->filearr, true ).'</pre>';
 	}
 	
@@ -981,6 +1005,7 @@ class HTML_Import extends WP_Importer {
 		echo '<h3>';
 		printf( __( 'All done. <a href="%s">Go to the Media Library.</a>' ), 'media.php' );
 		echo '</h3>';
+		// DEBUG
 		//echo '<pre>'.print_r( $this->filearr, true ).'</pre>';
 	}
 	
@@ -997,6 +1022,7 @@ class HTML_Import extends WP_Importer {
 		echo '<h3>';
 		printf( __( 'All done. <a href="%s">Go to the Media Library.</a>' ), 'media.php' );
 		echo '</h3>';
+		// DEBUG
 		//echo '<pre>'.print_r( $this->filearr, true ).'</pre>';
 	}
 	
@@ -1026,6 +1052,7 @@ class HTML_Import extends WP_Importer {
 		printf( __( 'All done. <a href="%s">Have fun!</a>', 'import-html-pages' ),  'edit.php?post_type='.$posttype );
 		echo '</h3>';
 		flush();
+		// DEBUG
 //		echo '<pre>'.print_r( $this->filearr, true ).'</pre>';
 	}
 	
@@ -1122,13 +1149,14 @@ class HTML_Import extends WP_Importer {
 		<?php
 	}
 
-	function HTML_Import() {
+	function __construct() {
 		add_action( 'admin_head', array( &$this, 'importer_styles' ) );
 	}
 }
 
 } // class_exists( 'WP_Importer' )
 
+global $html_import;
 $html_import = new HTML_Import();
 
 register_importer( 'html', __( 'HTML', 'import-html-pages' ), sprintf( __( 'Import the contents of HTML files as posts, pages, or any custom post type. Visit <a href="%s">the options page</a> first to select which portions of your documents should be imported.', 'import-html-pages' ), 'options-general.php?page=html-import.php' ), array ( $html_import, 'dispatch' ) );

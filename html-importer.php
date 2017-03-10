@@ -709,6 +709,11 @@ class HTML_Import extends WP_Importer {
 	
 	//Handle an individual file import. Borrowed almost entirely from dd32's Add From Server plugin
 	function handle_import_media_file( $file, $post_id = 0 ) {
+
+		// Remove the query string from the file URL.
+		$src_file = $file;
+		$file = preg_replace( '|\?.+$|', '', $file );
+
 		// see if the attachment already exists
 		$id = array_search( $file, $this->filearr );	
 		if ( $id === false ) { 
@@ -725,7 +730,7 @@ class HTML_Import extends WP_Importer {
 
 			// copy the file to the uploads dir
 			$new_file = $uploads['path'] . '/' . $filename;
-			if ( false === @copy( $file, $new_file ) )
+			if ( false === @copy( $src_file, $new_file ) )
 				return new WP_Error( 'upload_error', sprintf( __( 'Could not find the right path to %s ( tried %s ). It could not be imported. Please upload it manually.', 'html-import-pages' ), basename( $file ), $file ) );
 		//  DEBUG
 		//	else
@@ -792,6 +797,21 @@ class HTML_Import extends WP_Importer {
 		} // if attachment already exists
 		return $id;
 	}
+
+	// Remove responsive images srcsets.
+	function remove_srcsets() {
+
+		foreach ( $this->filearr as $id => $path ) {
+
+			$post = get_post( $id );
+			$content = preg_replace( '/(<img[^>]* )srcset=[\'"][^>\'"]+[\'"]/i', '$1', $post->post_content );
+
+			wp_update_post( array(
+				'ID' => $id,
+				'post_content' => $content
+			) );
+		}
+	}
 	
 	// largely borrowed from the Add Linked Images to Gallery plugin, except we do a simple str_replace at the end
 	function import_images( $id, $path ) {
@@ -812,7 +832,7 @@ class HTML_Import extends WP_Importer {
 		
 		// also check custom fields
 		$custom = get_post_meta( $id, '_ise_old_sidebar', true );
-		preg_match_all( '/<img[^>]* src=[\'"]?([^>\'" ]+)/i', $custom, $matches );
+		preg_match_all( '/<img[^>]* src=[\'"]?([^>\'" ]+)[\'"]/i', $custom, $matches );
 		for ( $i=0; $i<count( $matches[0] ); $i++ ) {
 			$srcs[] = $matches[1][$i];
 		}
@@ -824,7 +844,8 @@ class HTML_Import extends WP_Importer {
 			printf( _n( 'Found %d image in <a href="%s">%s</a>. Importing... ', 'Found %d images in <a href="%s">%s</a>. Importing... ', $count, 'html-import-pages' ), $count, get_permalink( $post->ID ), $title );
 			foreach ( $srcs as $src ) {
 				// src="http://foo.com/images/foo"
-				if ( preg_match( '/^http:\/\//', $src ) || preg_match( '/^https:\/\//', $src ) ) { 
+
+				if ( preg_match( '/^https?:\/\//', $src ) ) { 
 					$imgpath = $src;			
 				}
 				// src="/images/foo"
@@ -849,7 +870,8 @@ class HTML_Import extends WP_Importer {
 					$imgpath = wp_get_attachment_url( $imgid );
 			
 					//  replace paths in the content
-					if ( !is_wp_error( $imgpath ) ) {			
+					if ( !is_wp_error( $imgpath ) ) {
+
 						$content = str_replace( $src, $imgpath, $content );
 						$custom = str_replace( $src, $imgpath, $custom );
 						$update = true;
@@ -1075,6 +1097,8 @@ class HTML_Import extends WP_Importer {
 			$this->get_single_file();
 			$this->print_results( $options['type'] );
 			wp_import_cleanup( $file['id'] );
+			if ( $options['remove_srcset'] )
+				$this->remove_srcsets();
 			if ( $options['import_images'] )
 				$this->find_images();
 			if ( $options['import_documents'] )
@@ -1097,6 +1121,8 @@ class HTML_Import extends WP_Importer {
 			echo '<h2>'.__( 'Importing HTML files...', 'import-html-pages' ).'</h2>';
 			$this->get_files_from_directory( $options['root_directory'] );
 			$this->print_results( $options['type'] );
+			if ( isset( $options['remove_srcset'] ) && $options['remove_srcset'] )
+				$this->remove_srcsets();
 			if ( isset( $options['import_images'] ) && $options['import_images'] )
 				$this->find_images();
 			if ( isset( $options['import_documents'] ) && $options['import_documents'] )

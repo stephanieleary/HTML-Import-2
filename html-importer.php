@@ -860,10 +860,10 @@ class HTML_Import extends WP_Importer {
 						$imgpath = ( is_file( $path ) ? dirname( $path ) : $path ) . '/' . $src;
 				}
 				// intersect base path and src, or just clean up junk
-				$imgpath = $this->remove_dot_segments( $imgpath );
+				$_imgpath = $this->remove_dot_segments( $imgpath );
 			 
 				//  load the image from $imgpath
-				$imgid = $this->handle_import_media_file( $imgpath, $id );
+				$imgid = $this->handle_import_media_file( $_imgpath, $id );
 				if ( is_wp_error( $imgid ) )
 					echo '<span class="attachment_error">'.$imgid->get_error_message().'</span>';
 				else {

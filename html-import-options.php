@@ -22,6 +22,7 @@ function html_import_get_options() {
 		'allow_tags' => '<p><br><img><a><ul><ol><li><dl><dt><dd><blockquote><cite><em><i><strong><b><h2><h3><h4><h5><h6><hr>',
 		'allow_attributes' => 'href,alt,title,src',
 		'import_images' => 0,
+		'remove_srcset' => 0,
 		'import_documents' => 0,
 		'document_mimes' => 'rtf,doc,docx,xls,xlsx,csv,ppt,pps,pptx,ppsx,pdf,zip,wmv,avi,flv,mov,mpeg,mp3,m4a,wav',
 		'fix_links' => 0,
@@ -227,6 +228,13 @@ function html_import_options_page() { ?>
 				<td>
 					<label><input name="html_import[import_images]" id="import_images"  type="checkbox" value="1" 
 						<?php checked( $options['import_images'], '1' ); ?> /> <?php _e( "Import linked images", 'import-html-pages' ); ?></label>
+				</td>
+				</tr>
+				<tr>
+				<th></th>
+				<td>
+					<label><input name="html_import[remove_srcset]" id="remove_srcset"  type="checkbox" value="1" 
+						<?php checked( $options['remove_srcset'], '1' ); ?> /> <?php _e( "Remove responsive image srcsets", 'import-html-pages' ); ?></label>
 				</td>
 				</tr>
 				<tr>

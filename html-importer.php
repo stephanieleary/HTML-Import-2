@@ -383,7 +383,7 @@ class HTML_Import extends WP_Importer {
 			// title
 			if ( $options['import_title'] == "region" ) {
 				// appending strings unnecessarily so this plugin can be edited in Dreamweaver if needed
-				$titlematch = '/<'.'!-- InstanceBeginEditable name="'.$options['title_region'].'" --'.'>( .* )<'.'!-- InstanceEndEditable --'.'>/isU';
+				$titlematch = '/<'.'!-- InstanceBeginEditable name="'.$options['title_region'].'" --'.'>(.*)<'.'!-- InstanceEndEditable --'.'>/isU';
 				preg_match( $titlematch, $this->file, $titlematches );
 				$my_post['post_title'] = strip_tags( trim( $titlematches[1] ) );
 			}
@@ -471,7 +471,7 @@ class HTML_Import extends WP_Importer {
 			else if ( $options['timestamp'] == 'customfield' ) {
 				if ( $options['import_date'] == "region" ) {
 					// appending strings unnecessarily so this plugin can be edited in Dreamweaver if needed
-					$datematch = '/<'.'!-- InstanceBeginEditable name="'.$options['date_region'].'" --'.'>( .* )<'.'!-- InstanceEndEditable --'.'>/isU';
+					$datematch = '/<'.'!-- InstanceBeginEditable name="'.$options['date_region'].'" --'.'>(.*)<'.'!-- InstanceEndEditable --'.'>/isU';
 					preg_match( $datematch, $this->file, $datematches );
 					$date = $datematches[1];
 				}
@@ -505,7 +505,7 @@ class HTML_Import extends WP_Importer {
 			// content
 			if ( $options['import_content'] == "region" ) {
 				// appending strings unnecessarily so this plugin can be edited in Dreamweaver if needed
-				$contentmatch = '/<'.'!-- InstanceBeginEditable name="'.$options['content_region'].'" --'.'>( .* )<'.'!-- InstanceEndEditable --'.'>/isU';
+				$contentmatch = '/<'.'!-- InstanceBeginEditable name="'.$options['content_region'].'" --'.'>(.*)<'.'!-- InstanceEndEditable --'.'>/isU';
 				preg_match( $contentmatch, $this->file, $contentmatches );
 				$my_post['post_content'] = $contentmatches[1];
 			}
@@ -548,7 +548,7 @@ class HTML_Import extends WP_Importer {
 				if ( !empty( $fieldname ) ) {
 					if ( $options['import_field'][$index] == "region" ) {
 						// appending strings unnecessarily so this plugin can be edited in Dreamweaver if needed
-						$custommatch = '/<'.'!-- InstanceBeginEditable name="'.$options['customfield_region'][$index].'" --'.'>( .* )<'.'!-- InstanceEndEditable --'.'>/isU';
+						$custommatch = '/<'.'!-- InstanceBeginEditable name="'.$options['customfield_region'][$index].'" --'.'>(.*)<'.'!-- InstanceEndEditable --'.'>/isU';
 						preg_match( $custommatch, $this->file, $custommatches );
 						if ( isset( $custommatches[1] ) )
 							$customfields[$fieldname] = $custommatches[1];
@@ -1111,7 +1111,7 @@ class HTML_Import extends WP_Importer {
 			if ( validate_import_file( $options['root_directory'] ) > 0 )
 				wp_die( __( "The beginning directory you entered is not an absolute path. Relative paths are not allowed here.", 'import-html-pages' ) );
 			
-			$this->table = '';
+			$this->table = array();
 			$this->redirects = '';
 			$this->filearr = array();
 			$skipdirs = explode( ",", $options['skipdirs'] );

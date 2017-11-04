@@ -99,8 +99,8 @@ function html_import_options_page() { ?>
 							 	value="<?php echo esc_attr( $options['root_directory'] ); ?>" class="widefloat" />
 							</label><br />
 							<span class="description">
-								<?php _e( 'The absolute path to the files you want to import.', 'html-import-pages' ); ?><br />
-								<?php printf( __( 'Hint: the absolute path to this WordPress installation is: %s', 'html-import-pages' ), '<kbd>'.rtrim( ABSPATH, '/' ).'</kbd>' ); ?>
+								<?php _e( 'The absolute path to the files you want to import.', 'import-html-pages' ); ?><br />
+								<?php printf( __( 'Hint: the absolute path to this WordPress installation is: %s', 'import-html-pages' ), '<kbd>'.rtrim( ABSPATH, '/' ).'</kbd>' ); ?>
 							</span>
 						</p></td>
 		        </tr>
@@ -110,7 +110,7 @@ function html_import_options_page() { ?>
 			        <td><p><label><input type="text" name="html_import[old_url]" id="old_url" 
 						value="<?php echo esc_attr( $options['old_url'] ); ?>" class="widefloat" /> </label><br />
 						<span class="description">
-							<?php _e( 'This will be used only to generate accurate <kbd>.htaccess</kbd> redirects. The importer will not search for files here.', 'html-import-pages' ); ?>
+							<?php _e( 'This will be used only to generate accurate <kbd>.htaccess</kbd> redirects. The importer will not search for files here.', 'import-html-pages' ); ?>
 						</span>
 					</p></td>
 		        </tr>

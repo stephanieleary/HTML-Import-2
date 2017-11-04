@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/import-html-pages\n"
-"POT-Creation-Date: 2017-11-04 16:58+0100\n"
-"PO-Revision-Date: 2017-11-04 17:01+0100\n"
+"POT-Creation-Date: 2017-11-04 17:59+0100\n"
+"PO-Revision-Date: 2017-11-04 18:01+0100\n"
 "Last-Translator: Rémi Peyronnet <remi+po@via.ecp.fr>\n"
 "Language-Team: français <>\n"
 "Language: fr_FR\n"
@@ -603,11 +603,11 @@ msgid "Settings saved. %s <a href=\"%s\">Ready to import files?</a>"
 msgstr ""
 "Réglages sauvegardés. %s <a href=\"%s\">Prêt à importer vos fichiers ?</a>"
 
-#: html-import.php:62
+#: html-import.php:65
 msgid "HTML Import"
 msgstr "Import HTML"
 
-#: html-import.php:72
+#: html-import.php:75
 #, php-format
 msgid ""
 "This is a complicated importer with lots of options. If you have never used "
@@ -618,7 +618,7 @@ msgstr ""
 "votre première utilisation, vous devriez consulter le <a href=\"%s\">guide "
 "d'utilisation</a>."
 
-#: html-import.php:73
+#: html-import.php:76
 msgid ""
 "You need to look through the first five tabs and save your settings before "
 "you run the importer. The sixth ( Tools ) contains links to some tools that "
@@ -628,11 +628,11 @@ msgstr ""
 "avant d'utiliser l'import. Le sixième onglet (Outils) contient des liens "
 "pour différents outils utiles une fois l'import effectué."
 
-#: html-import.php:75
+#: html-import.php:78
 msgid "Tips"
 msgstr "Astuces"
 
-#: html-import.php:77
+#: html-import.php:80
 msgid ""
 "If there is already some content in this site, you should back up your "
 "database before you import."
@@ -640,11 +640,11 @@ msgstr ""
 "S'il y a déjà du contenu dans ce site vous devriez sauvegarder votre base de "
 "donnée avant l'import."
 
-#: html-import.php:78
+#: html-import.php:81
 msgid "Before you import, deactivate any crosspost or notification plugins."
 msgstr "Avant l'import, désactivez tout plugin de notification ou crosspost."
 
-#: html-import.php:79
+#: html-import.php:82
 msgid ""
 "Try uploading a single file before you run the importer on the whole "
 "directory. Check the imported page and see whether you need to adjust your "
@@ -654,7 +654,7 @@ msgstr ""
 "répertoire entier. Vérifiez si la page importée est correcte ou nécessite "
 "d'ajuster les réglages."
 
-#: html-import.php:80
+#: html-import.php:83
 msgid ""
 "Need to import both posts and pages? Run the importer on a subdirectory ( e."
 "g. 'news' ), then add the subdirectory name to the list of skipped "
@@ -665,23 +665,23 @@ msgstr ""
 "répertoire à la liste des répertoires non traités, puis exécutez à nouveau "
 "l'import sur le répertoire racine."
 
-#: html-import.php:82
+#: html-import.php:85
 msgid "More Help"
 msgstr "Plus d'aide"
 
-#: html-import.php:85
+#: html-import.php:88
 msgid "User Guide"
 msgstr "Guide d'utilisation"
 
-#: html-import.php:86
+#: html-import.php:89
 msgid "Plugin Home Page"
 msgstr "Page d'accueil du plugin"
 
-#: html-import.php:87
+#: html-import.php:90
 msgid "Support Forum"
 msgstr "Forum de support"
 
-#: html-import.php:98
+#: html-import.php:101
 msgid "Settings"
 msgstr "Réglages"
 

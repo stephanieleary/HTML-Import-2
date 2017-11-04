@@ -607,7 +607,7 @@ class HTML_Import extends WP_Importer {
 		// see if the post already exists
 		// but don't bother printing this message if we're doing an index file; we know its parent already exists
 		if ( $post_id = post_exists( $my_post['post_title'], $my_post['post_content'], $my_post['post_date'] ) && basename( $path ) != $options['index_file'] )
-			$this->table[] = "<tr><th class='error'>--</th><td colspan='3' class='error'> " . sprintf( __( "%s ( %s ) has already been imported", 'html-import-pages' ), $my_post['post_title'], $handle ) . "</td></tr>";
+			$this->table[] = "<tr><th class='error'>--</th><td colspan='3' class='error'> " . sprintf( __( "%s ( %s ) has already been imported", 'import-html-pages' ), $my_post['post_title'], $handle ) . "</td></tr>";
 		
 		// if we're doing hierarchicals and this is an index file of a subdirectory, instead of importing this as a separate page, update the content of the placeholder page we created for the directory
 		$index_files = explode( ',',$options['index_file'] );
@@ -655,7 +655,7 @@ class HTML_Import extends WP_Importer {
 		if ( is_wp_error( $post_id ) )
 			$this->table[] = "<tr><th class='error'>--</th><td colspan='3' class='error'> " . $post_id /* error msg */ . "</td></tr>";
 		if ( !$post_id ) 
-			$this->table[] = "<tr><th class='error'>--</th><td colspan='3' class='error'> " . sprintf( __( "Could not import %s. You should copy its contents manually.", 'html-import-pages' ), $handle ) . "</td></tr>";
+			$this->table[] = "<tr><th class='error'>--</th><td colspan='3' class='error'> " . sprintf( __( "Could not import %s. You should copy its contents manually.", 'import-html-pages' ), $handle ) . "</td></tr>";
 		
 		// if no errors, handle custom fields
 		if ( isset( $customfields ) ) {
@@ -731,10 +731,10 @@ class HTML_Import extends WP_Importer {
 			// copy the file to the uploads dir
 			$new_file = $uploads['path'] . '/' . $filename;
 			if ( false === @copy( $src_file, $new_file ) )
-				return new WP_Error( 'upload_error', sprintf( __( 'Could not find the right path to %s ( tried %s ). It could not be imported. Please upload it manually.', 'html-import-pages' ), basename( $file ), $file ) );
+				return new WP_Error( 'upload_error', sprintf( __( 'Could not find the right path to %s ( tried %s ). It could not be imported. Please upload it manually.', 'import-html-pages' ), basename( $file ), $file ) );
 		//  DEBUG
 		//	else
-		//	 	printf( __( '<br /><em>%s</em> is being copied to the uploads directory as <em>%s</em>.', 'html-import-pages' ), $file, $new_file );
+		//	 	printf( __( '<br /><em>%s</em> is being copied to the uploads directory as <em>%s</em>.', 'import-html-pages' ), $file, $new_file );
 	
 			// Set correct file permissions
 			$stat = stat( dirname( $new_file ) );
@@ -841,7 +841,7 @@ class HTML_Import extends WP_Importer {
 			$count = count( $srcs );
 			
 			echo "<p>";
-			printf( _n( 'Found %d image in <a href="%s">%s</a>. Importing... ', 'Found %d images in <a href="%s">%s</a>. Importing... ', $count, 'html-import-pages' ), $count, get_permalink( $post->ID ), $title );
+			printf( _n( 'Found %d image in <a href="%s">%s</a>. Importing... ', 'Found %d images in <a href="%s">%s</a>. Importing... ', $count, 'import-html-pages' ), $count, get_permalink( $post->ID ), $title );
 			foreach ( $srcs as $src ) {
 				// src="http://foo.com/images/foo"
 
@@ -914,7 +914,7 @@ class HTML_Import extends WP_Importer {
 			$count = count( $hrefs );
 			
 			echo "<p>";
-			printf( _n( 'Found %d link in <a href="%s">%s</a>. Checking file types... ', 'Found %d links in <a href="%s">%s</a>. Checking file types... ', $count, 'html-import-pages' ), $count, get_permalink( $post->ID ), $title );
+			printf( _n( 'Found %d link in <a href="%s">%s</a>. Checking file types... ', 'Found %d links in <a href="%s">%s</a>. Checking file types... ', $count, 'import-html-pages' ), $count, get_permalink( $post->ID ), $title );
 			
 			//echo '<p>Looking in '.get_permalink( $id ).'</p>';
 			$options = get_option( 'html_import' );
@@ -1131,7 +1131,7 @@ class HTML_Import extends WP_Importer {
 				$this->find_internal_links();
 		}
 		else {
-			_e( "Your file upload didn't work. Try again?", 'html-import-pages' );
+			_e( "Your file upload didn't work. Try again?", 'import-html-pages' );
 		}
 
 		do_action( 'import_done', 'html' );

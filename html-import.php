@@ -6,11 +6,16 @@ Description: Imports well-formed static HTML files into WordPress posts or pages
 Version: 2.6
 Author: Stephanie Leary
 Author URI: http://sillybean.net/
+Text Domain: import-html-pages
+Domain Path: /languages/
 License: GPL 2
 */
 
 // Make sure translations are loaded before plugin registration
 load_plugin_textdomain( 'import-html-pages', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
+
+// Force description translation string (KEEP THIS IN SYNC with description field above !)
+if (0) $html_import_description = __('Imports well-formed static HTML files into WordPress posts or pages. Supports Dreamweaver templates and Word HTML cleanup. Visit the settings page to get started. See the <a href="http://sillybean.net/code/wordpress/html-import-2/user-guide/">User Guide</a> for details.');
 
 require_once ( 'html-importer.php' );
 require_once ( 'html-import-options.php' );

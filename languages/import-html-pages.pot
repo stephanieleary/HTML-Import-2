@@ -5,7 +5,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/import-html-pages\n"
-"POT-Creation-Date: 2017-11-04 18:01+0100\n"
+"POT-Creation-Date: 2017-11-04 18:20+0100\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -526,11 +526,19 @@ msgstr ""
 msgid "Settings saved. %s <a href=\"%s\">Ready to import files?</a>"
 msgstr ""
 
-#: html-import.php:65
+#: html-import.php:18
+msgid ""
+"Imports well-formed static HTML files into WordPress posts or pages. "
+"Supports Dreamweaver templates and Word HTML cleanup. Visit the settings "
+"page to get started. See the <a href=\"http://sillybean.net/code/wordpress/"
+"html-import-2/user-guide/\">User Guide</a> for details."
+msgstr ""
+
+#: html-import.php:70
 msgid "HTML Import"
 msgstr ""
 
-#: html-import.php:75
+#: html-import.php:80
 #, php-format
 msgid ""
 "This is a complicated importer with lots of options. If you have never used "
@@ -538,58 +546,58 @@ msgid ""
 "Guide</a>."
 msgstr ""
 
-#: html-import.php:76
+#: html-import.php:81
 msgid ""
 "You need to look through the first five tabs and save your settings before "
 "you run the importer. The sixth ( Tools ) contains links to some tools that "
 "are helpful after you've imported."
 msgstr ""
 
-#: html-import.php:78
+#: html-import.php:83
 msgid "Tips"
 msgstr ""
 
-#: html-import.php:80
+#: html-import.php:85
 msgid ""
 "If there is already some content in this site, you should back up your "
 "database before you import."
 msgstr ""
 
-#: html-import.php:81
+#: html-import.php:86
 msgid "Before you import, deactivate any crosspost or notification plugins."
 msgstr ""
 
-#: html-import.php:82
+#: html-import.php:87
 msgid ""
 "Try uploading a single file before you run the importer on the whole "
 "directory. Check the imported page and see whether you need to adjust your "
 "content and/or title settings."
 msgstr ""
 
-#: html-import.php:83
+#: html-import.php:88
 msgid ""
 "Need to import both posts and pages? Run the importer on a subdirectory ( e."
 "g. 'news' ), then add the subdirectory name to the list of skipped "
 "directories and run the importer again on the parent directory."
 msgstr ""
 
-#: html-import.php:85
+#: html-import.php:90
 msgid "More Help"
 msgstr ""
 
-#: html-import.php:88
+#: html-import.php:93
 msgid "User Guide"
 msgstr ""
 
-#: html-import.php:89
+#: html-import.php:94
 msgid "Plugin Home Page"
 msgstr ""
 
-#: html-import.php:90
+#: html-import.php:95
 msgid "Support Forum"
 msgstr ""
 
-#: html-import.php:101
+#: html-import.php:106
 msgid "Settings"
 msgstr ""
 

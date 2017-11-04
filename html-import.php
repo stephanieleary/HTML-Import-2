@@ -103,7 +103,7 @@ add_action( 'admin_menu', 'html_import_add_pages' );
 add_action( 'plugin_action_links_' . plugin_basename( __FILE__ ), 'html_import_plugin_actions' );
 function html_import_plugin_actions( $links ) {
 	$new_links = array();
-	$new_links[] = sprintf( '<a href="options-general.php?page=html-import.php">%s</a>', __( 'Settings', 'html-import' ) );
+	$new_links[] = sprintf( '<a href="options-general.php?page=html-import.php">%s</a>', __( 'Settings', 'import-html-pages' ) );
 	return array_merge( $new_links, $links );
 }
 

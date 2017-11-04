@@ -566,8 +566,7 @@ function html_import_options_page() { ?>
 			</td>
 	        <td>
 
-				Select field by:<br />
-				<label>
+				<label><?php _e( 'Select field by:', 'import-html-pages' ); ?><br />
 				<input type="radio" name="html_import[import_field][<?php echo $index; ?>]"
 					value="tag" class="showrow" title="customfield" <?php checked( $options['import_field'][$index], 'tag' ); ?> />
 				<?php _e( 'HTML tag', 'import-html-pages' ); ?></label> 

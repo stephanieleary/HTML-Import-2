@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://wordpress.org/tag/import-html-pages\n"
-"POT-Creation-Date: 2017-11-04 18:20+0100\n"
-"PO-Revision-Date: 2017-11-04 18:22+0100\n"
+"POT-Creation-Date: 2017-11-04 18:28+0100\n"
+"PO-Revision-Date: 2017-11-04 18:28+0100\n"
 "Last-Translator: Rémi Peyronnet <remi+po@via.ecp.fr>\n"
 "Language-Team: français <>\n"
 "Language: fr_FR\n"
@@ -20,7 +20,7 @@ msgstr ""
 "X-Poedit-KeywordsList: __;_e;_n:1,2\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: html-import-options.php:5 html-import-options.php:792
+#: html-import-options.php:5 html-import-options.php:791
 msgid "html-files-to-import"
 msgstr "html-files-to-import"
 
@@ -90,7 +90,7 @@ msgstr "Champs personnalisés"
 msgid "Categories &amp; Tags"
 msgstr "Catégories & Tags"
 
-#: html-import-options.php:86 html-import-options.php:743
+#: html-import-options.php:86 html-import-options.php:742
 msgid "Tools"
 msgstr "Outils"
 
@@ -178,16 +178,16 @@ msgid "Select content by"
 msgstr "Sélectionner le contenu avec"
 
 #: html-import-options.php:175 html-import-options.php:351
-#: html-import-options.php:508 html-import-options.php:573
-#: html-import-options.php:638
+#: html-import-options.php:508 html-import-options.php:572
+#: html-import-options.php:637
 msgid "HTML tag"
 msgstr "Balise HTML"
 
 #: html-import-options.php:180 html-import-options.php:215
 #: html-import-options.php:356 html-import-options.php:394
 #: html-import-options.php:513 html-import-options.php:537
-#: html-import-options.php:578 html-import-options.php:608
-#: html-import-options.php:643 html-import-options.php:670
+#: html-import-options.php:577 html-import-options.php:607
+#: html-import-options.php:642 html-import-options.php:669
 msgid "Dreamweaver template region"
 msgstr "Région de template Dreamweaver"
 
@@ -196,8 +196,8 @@ msgid "Import entire file"
 msgstr "Importer le fichier entier"
 
 #: html-import-options.php:192 html-import-options.php:368
-#: html-import-options.php:520 html-import-options.php:585
-#: html-import-options.php:650
+#: html-import-options.php:520 html-import-options.php:584
+#: html-import-options.php:649
 msgid "Tag"
 msgstr "Balise"
 
@@ -206,8 +206,8 @@ msgid "The HTML tag, without brackets"
 msgstr "La balise HTML, sans délimiteurs"
 
 #: html-import-options.php:199 html-import-options.php:375
-#: html-import-options.php:525 html-import-options.php:592
-#: html-import-options.php:656
+#: html-import-options.php:525 html-import-options.php:591
+#: html-import-options.php:655
 msgid "Attribute"
 msgstr "Attribut"
 
@@ -220,8 +220,8 @@ msgstr ""
 "n'importe pas, comme pour &lt;body&gt;"
 
 #: html-import-options.php:206 html-import-options.php:382
-#: html-import-options.php:530 html-import-options.php:599
-#: html-import-options.php:662
+#: html-import-options.php:530 html-import-options.php:598
+#: html-import-options.php:661
 msgid "= Value"
 msgstr "= Valeur"
 
@@ -430,19 +430,23 @@ msgstr "Sélectionner la date par"
 msgid "Custom fields"
 msgstr "Champs personnalisés"
 
-#: html-import-options.php:558 html-import-options.php:624
+#: html-import-options.php:558 html-import-options.php:623
 msgid "Custom field name"
 msgstr "Nom de champ personnalisé"
 
-#: html-import-options.php:564 html-import-options.php:629
+#: html-import-options.php:564 html-import-options.php:628
 msgid "Allow HTML"
 msgstr "Autorise le HTML"
 
-#: html-import-options.php:691
+#: html-import-options.php:569
+msgid "Select field by:"
+msgstr "Sélectionner le champ par :"
+
+#: html-import-options.php:690
 msgid "Taxonomies"
 msgstr "Taxonomies"
 
-#: html-import-options.php:699
+#: html-import-options.php:698
 msgid ""
 "Here, you may assign categories, tags, and custom taxonomy terms to all your "
 "imported posts."
@@ -450,7 +454,7 @@ msgstr ""
 "Ici vous pouvez assigner des catégories, tags et autres termes personnalisés "
 "à tous vos articles importés."
 
-#: html-import-options.php:700
+#: html-import-options.php:699
 msgid ""
 "To import tags from a region in each file, use a custom field with the name "
 "<kbd>post_tag</kbd>."
@@ -458,11 +462,11 @@ msgstr ""
 "Pour importer des tags depuis une partie des fichiers, utilisez un champ "
 "personnalisé avec le nom <kbd>post_tags</kbd>"
 
-#: html-import-options.php:746
+#: html-import-options.php:745
 msgid "Regenerate <kbd>.htaccess</kbd> redirects"
 msgstr "Regénérer les redirections <kbd>.htaccess</kbd>"
 
-#: html-import-options.php:747
+#: html-import-options.php:746
 #, php-format
 msgid ""
 "If you <a href=\"%s\">changed your permalink structure</a> after you "
@@ -472,11 +476,11 @@ msgstr ""
 "importé des articles, vous pouvez <a href=\"%s\">regénérer les redirections</"
 "a>."
 
-#: html-import-options.php:750
+#: html-import-options.php:749
 msgid "Other helpful plugins"
 msgstr "Autres plugins utiles"
 
-#: html-import-options.php:752
+#: html-import-options.php:751
 #, php-format
 msgid ""
 "<a href=\"%s\">Broken Link Checker</a> finds broken links and references to "
@@ -489,7 +493,7 @@ msgstr ""
 "autres que les images, vous devriez utiliser ceci pour voir ce qui doit être "
 "copié ou mis à jour à partir de votre ancien site."
 
-#: html-import-options.php:753
+#: html-import-options.php:752
 #, php-format
 msgid ""
 "<a href=\"%s\">Search and Replace</a> helps you fix many broken links at "
@@ -500,7 +504,7 @@ msgstr ""
 "s'il existe un pattern de remplacement (comme  <kbd>&lt;a href=\"../../files"
 "\"&gt;</kbd>) pour vos liens cassés."
 
-#: html-import-options.php:754
+#: html-import-options.php:753
 #, php-format
 msgid ""
 "<a href=\"%s\">Redirection</a> provides a nice admin interface for managing "
@@ -516,7 +520,7 @@ msgstr ""
 "et copier les anciennes adresses depuis les champs personnalisés et les "
 "coller dans les options de redirection."
 
-#: html-import-options.php:755
+#: html-import-options.php:754
 #, php-format
 msgid ""
 "<a href=\"%s\">Add from Server</a> lets you import media files that are on "
@@ -526,7 +530,7 @@ msgstr ""
 "sont sur votre server mais qui ne font pas partie de la media library "
 "WordPress."
 
-#: html-import-options.php:756
+#: html-import-options.php:755
 #, php-format
 msgid ""
 "<a href=\"%s\">Add Linked Images to Gallery</a> is helpful if you have "
@@ -540,11 +544,11 @@ msgstr ""
 "images référencées via une URL complètes : les URL relatives ne seront pas "
 "importées."
 
-#: html-import-options.php:760
+#: html-import-options.php:759
 msgid "Donate"
 msgstr "Donner"
 
-#: html-import-options.php:762
+#: html-import-options.php:761
 #, php-format
 msgid ""
 "If this importer has saved you hours of copying and pasting, a <a href=\"%s"
@@ -554,11 +558,11 @@ msgstr ""
 "coller, un <a href=\"%s\">don pour les développements futurs</a> sera très "
 "apprécié !"
 
-#: html-import-options.php:769
+#: html-import-options.php:768
 msgid "Save settings"
 msgstr "Sauvegarder les réglages"
 
-#: html-import-options.php:791 html-importer.php:1112
+#: html-import-options.php:790 html-importer.php:1112
 msgid ""
 "The beginning directory you entered is not an absolute path. Relative paths "
 "are not allowed here."
@@ -566,26 +570,26 @@ msgstr ""
 "Le répertoire de départ que vous avez entré n'est pas un chemin absolu. Les "
 "chemins relatifs ne sont pas autorisés ici."
 
-#: html-import-options.php:858
+#: html-import-options.php:857
 msgid "You did not enter an HTML content tag to import."
 msgstr "Vous n'avez pas entré une balise HTML d'import du contenu."
 
-#: html-import-options.php:860
+#: html-import-options.php:859
 msgid "You did not enter a Dreamweaver content template region to import."
 msgstr ""
 "Vous n'avez pas entré la région du template Dreamweaver à importer comme "
 "contenu."
 
-#: html-import-options.php:862
+#: html-import-options.php:861
 msgid "You did not enter an HTML title tag to import."
 msgstr "Vous n'avez pas entré la balise HTML du titre à importer."
 
-#: html-import-options.php:864
+#: html-import-options.php:863
 msgid "You did not enter a Dreamweaver title template region to import."
 msgstr ""
 "Vous n'avez pas entré la région du template Dreamweaver du titre à importer."
 
-#: html-import-options.php:903
+#: html-import-options.php:902
 #, php-format
 msgid ""
 "If you intend to <a href=\"%s\">set a permalink structure</a>, you should do "
@@ -597,7 +601,7 @@ msgstr ""
 "vous devriez le faire avant l'import pour que les redirections <kbd>."
 "htaccess</kbd> soient correctes."
 
-#: html-import-options.php:906
+#: html-import-options.php:905
 #, php-format
 msgid "Settings saved. %s <a href=\"%s\">Ready to import files?</a>"
 msgstr ""

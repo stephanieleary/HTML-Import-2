@@ -250,7 +250,7 @@ function html_import_options_page() { ?>
 		            <td><label>
 			 			<input type="text" name="html_import[document_mimes]" id="document_mimes" 
 							value="<?php echo esc_attr( $options['document_mimes'] ); ?>" class="widefloat" />  </label><br />
-		            <span class="description"><?php _e( "Enter file extensions without periods, separated by commas. File types not listed here will not be imported to the media library. <br />
+		            <span class="description"><?php _e( "Enter file extensions without periods, separated by commas. File types not listed here will not be imported to the media library. Use '*' for all file extensions (except those imported).<br />
 		Suggested: rtf, doc, docx, xls, xlsx, csv, ppt, pps, pptx, ppsx, pdf, zip, wmv, avi, flv, mov, mpeg, mp3, m4a, wav<br />", 'import-html-pages' ); ?></span>
 		            </td> 
 		       </tr>

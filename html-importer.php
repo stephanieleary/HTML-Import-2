@@ -956,7 +956,7 @@ class HTML_Import extends WP_Importer {
 						$filename_parts = explode( ".",$linkpath );
 						$ext = strtolower( $filename_parts[count( $filename_parts ) - 1] );
 						
-						if ( in_array( $ext, $mimes ) ) {  // allowed upload types only
+						if ( in_array( $ext, $mimes ) ||  (in_array("*", $mimes) && !in_array($ext, $this->allowed)) ) {  // allowed upload types only
 							echo '<br />Importing '.ltrim( strrchr( $linkpath, '/' ), '/' ).'... ';
 							//  load the file from $linkpath
 							$fileid = $this->handle_import_media_file( $linkpath, $id );

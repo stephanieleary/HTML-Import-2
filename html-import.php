@@ -98,3 +98,9 @@ function html_import_plugin_actions( $links ) {
 	$new_links[] = sprintf( '<a href="options-general.php?page=html-import.php">%s</a>', __( 'Settings', 'html-import' ) );
 	return array_merge( $new_links, $links );
 }
+
+function load_html_import_textdomain() {
+	load_plugin_textdomain( 'import-html-pages', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
+}
+add_action( 'init', 'load_html_import_textdomain' );
+

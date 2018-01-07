@@ -25,6 +25,8 @@ function html_import_get_options() {
 		'remove_srcset' => 0,
 		'import_documents' => 0,
 		'document_mimes' => 'rtf,doc,docx,xls,xlsx,csv,ppt,pps,pptx,ppsx,pdf,zip,wmv,avi,flv,mov,mpeg,mp3,m4a,wav',
+		'document_keep_structure' => 0,
+		'documents_prefix' == _('imported-pages', 'import-html-pages' ),
 		'fix_links' => 0,
 		'import_title' => 0,
 		'title_region' => '',
@@ -252,6 +254,23 @@ function html_import_options_page() { ?>
 							value="<?php echo esc_attr( $options['document_mimes'] ); ?>" class="widefloat" />  </label><br />
 		            <span class="description"><?php _e( "Enter file extensions without periods, separated by commas. File types not listed here will not be imported to the media library. Use '*' for all file extensions (except those imported).<br />
 		Suggested: rtf, doc, docx, xls, xlsx, csv, ppt, pps, pptx, ppsx, pdf, zip, wmv, avi, flv, mov, mpeg, mp3, m4a, wav<br />", 'import-html-pages' ); ?></span>
+		            </td> 
+		       </tr>
+				<tr class="import_documents" 
+					<?php if ( isset( $options['import_documents'] ) && !$options['import_documents'] ) echo 'style="display:none;"'; ?>>
+				<th></th>
+				<td>
+					<label><input name="html_import[documents_keep_structure]" id="documents_keep_structure" value="1" type="checkbox" <?php checked( $options['documents_keep_structure'] ); ?> class="toggle" /> 
+						 <?php _e( "keep structure of imported documents", 'import-html-pages' ); ?></label>
+				</td>
+				</tr>
+				<tr class="import_documents" 
+					<?php if ( isset( $options['import_documents'] ) && !$options['import_documents'] ) echo 'style="display:none;"'; ?>>
+				<th><?php _e( "Media Folder Prefix", 'import-html-pages' ); ?></th>
+		            <td><label>
+			 			<input type="text" name="html_import[documents_prefix]" id="documents_prefix" 
+							value="<?php echo esc_attr( $options['documents_prefix'] ); ?>" class="widefloat" />  </label><br />
+		            <span class="description"><?php _e( "Enter the folder prefix where uploads will be done", 'import-html-pages' ); ?></span>
 		            </td> 
 		       </tr>
 				<tr>

@@ -1111,7 +1111,7 @@ class HTML_Import extends WP_Importer {
 			if ( validate_import_file( $options['root_directory'] ) > 0 )
 				wp_die( __( "The beginning directory you entered is not an absolute path. Relative paths are not allowed here.", 'import-html-pages' ) );
 			
-			$this->table = '';
+			$this->table = array();
 			$this->redirects = '';
 			$this->filearr = array();
 			$skipdirs = explode( ",", $options['skipdirs'] );

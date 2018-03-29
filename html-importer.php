@@ -75,7 +75,7 @@ class HTML_Import extends WP_Importer {
 		$imported = get_posts( array( 'meta_key' => 'URL_before_HTML_Import', 'post_type' => 'any', 'post_status' => 'any', 'numberposts' => '-1' ) );
 		foreach( $imported as $post ) { 
 			$old = get_post_meta( $post->ID, 'URL_before_HTML_Import', true );
-			$newredirects .= "Redirect\t".$old."\t".get_permalink( $post->ID )."\t[R=301,NC,L]\n";
+			$newredirects .= "Redirect\t".$old."\t".  (($post->post_type=='attachment')?wp_get_attachment_url($post->ID):get_permalink( $post->ID ))."\t[R=301,NC,L]\n";
 		}
 		if ( !empty( $newredirects ) ) { ?>
 		<h3><?php _e( '.htaccess Redirects', 'import-html-pages' ); ?></h3>
@@ -137,7 +137,7 @@ class HTML_Import extends WP_Importer {
 	
 	function fix_internal_links( $content, $id ) {		
 		// find all href attributes
-		preg_match_all( '/<a[^>]* href=[\'"]?([^>\'" ]+ )/i', $content, $matches );
+		preg_match_all( '/<a[^>]* href=[\'"]?([^<>\'" ]+ )/i', $content, $matches );
 		for ( $i=0; $i<count( $matches[0] ); $i++ ) {
 			$hrefs[] = $matches[1][$i];
 		}
@@ -607,7 +607,7 @@ class HTML_Import extends WP_Importer {
 		// see if the post already exists
 		// but don't bother printing this message if we're doing an index file; we know its parent already exists
 		if ( $post_id = post_exists( $my_post['post_title'], $my_post['post_content'], $my_post['post_date'] ) && basename( $path ) != $options['index_file'] )
-			$this->table[] = "<tr><th class='error'>--</th><td colspan='3' class='error'> " . sprintf( __( "%s ( %s ) has already been imported", 'html-import-pages' ), $my_post['post_title'], $handle ) . "</td></tr>";
+			$this->table[] = "<tr><th class='error'>--</th><td colspan='3' class='error'> " . sprintf( __( "%s ( %s ) has already been imported", 'import-html-pages' ), $my_post['post_title'], $handle ) . "</td></tr>";
 		
 		// if we're doing hierarchicals and this is an index file of a subdirectory, instead of importing this as a separate page, update the content of the placeholder page we created for the directory
 		$index_files = explode( ',',$options['index_file'] );
@@ -655,7 +655,7 @@ class HTML_Import extends WP_Importer {
 		if ( is_wp_error( $post_id ) )
 			$this->table[] = "<tr><th class='error'>--</th><td colspan='3' class='error'> " . $post_id /* error msg */ . "</td></tr>";
 		if ( !$post_id ) 
-			$this->table[] = "<tr><th class='error'>--</th><td colspan='3' class='error'> " . sprintf( __( "Could not import %s. You should copy its contents manually.", 'html-import-pages' ), $handle ) . "</td></tr>";
+			$this->table[] = "<tr><th class='error'>--</th><td colspan='3' class='error'> " . sprintf( __( "Could not import %s. You should copy its contents manually.", 'import-html-pages' ), $handle ) . "</td></tr>";
 		
 		// if no errors, handle custom fields
 		if ( isset( $customfields ) ) {
@@ -713,7 +713,7 @@ class HTML_Import extends WP_Importer {
 		// Remove the query string from the file URL.
 		$src_file = $file;
 		$file = preg_replace( '|\?.+$|', '', $file );
-
+		
 		// see if the attachment already exists
 		$id = array_search( $file, $this->filearr );	
 		if ( $id === false ) { 
@@ -725,29 +725,49 @@ class HTML_Import extends WP_Importer {
 			// A writable uploads dir will pass this test. Again, there's no point overriding this one.
 			if ( ! ( ( $uploads = wp_upload_dir( $time ) ) && false === $uploads['error'] ) )
 				return new WP_Error( 'upload_error', $uploads['error'] );
+			
+			$options = get_option( 'html_import' );
 
-			$filename = wp_unique_filename( $uploads['path'], basename( $file ) );
+			if ((substr_compare("http://",$file,0,4) !=0) && ($options['documents_prefix'] || $options['documents_keep_structure']))	{
+				$up_path = $uploads['basedir'];
+				$up_url = $uploads['baseurl'];
+				if ($options['documents_prefix']) { 
+					$up_path = path_join($up_path, $options['documents_prefix']); 
+					$up_url =  path_join($up_url, $options['documents_prefix']); 
+				}
+				if ($options['documents_keep_structure']) {
+					$pathstruct=str_replace(path_join($options['root_directory'],""),"",dirname($file));
+					$up_path=path_join($up_path,$pathstruct);
+					$up_url=path_join($up_url,$pathstruct);
+				}
+			} else {
+				$up_path =  $uploads['path'];
+				$up_url =  $uploads['url'];
+			}
+			if (!wp_is_writable($up_path)) wp_mkdir_p($up_path);
 
-			// copy the file to the uploads dir
-			$new_file = $uploads['path'] . '/' . $filename;
-			if ( false === @copy( $src_file, $new_file ) )
-				return new WP_Error( 'upload_error', sprintf( __( 'Could not find the right path to %s ( tried %s ). It could not be imported. Please upload it manually.', 'html-import-pages' ), basename( $file ), $file ) );
-		//  DEBUG
-		//	else
-		//	 	printf( __( '<br /><em>%s</em> is being copied to the uploads directory as <em>%s</em>.', 'html-import-pages' ), $file, $new_file );
-	
-			// Set correct file permissions
-			$stat = stat( dirname( $new_file ) );
-			$perms = $stat['mode'] & 0000666;
-			@chmod( $new_file, $perms );
-			// Compute the URL
-			$url = $uploads['url'] . '/' . $filename;
+			$filename = wp_unique_filename( $up_path, basename( $file ) );
+			$new_file =  path_join($up_path, $filename);
+			$url = path_join($up_url , $filename);
 
 			//Apply upload filters
 			$return = apply_filters( 'wp_handle_upload', array( 'file' => $new_file, 'url' => $url, 'type' => wp_check_filetype( $file, null ) ) );
 			$new_file = $return['file'];
 			$url = $return['url'];
 			$type = $return['type'];
+			
+
+			// copy the file to the uploads dir
+			if ( false === @copy( $src_file, $new_file ) )
+				return new WP_Error( 'upload_error', sprintf( __( 'Could not find the right path to %s ( tried %s ). It could not be imported. Please upload it manually.', 'import-html-pages' ), basename( $file ), $file ) );
+		//  DEBUG
+		//	else
+		//	 	printf( __( '<br /><em>%s</em> is being copied to the uploads directory as <em>%s</em>.', 'import-html-pages' ), $file, $new_file );
+	
+			// Set correct file permissions
+			$stat = stat( dirname( $new_file ) );
+			$perms = $stat['mode'] & 0000666;
+			@chmod( $new_file, $perms );
 
 			$title = preg_replace( '!\.[^.]+$!', '', basename( $file ) );
 			$content = '';
@@ -783,8 +803,7 @@ class HTML_Import extends WP_Importer {
 			 );
 
 			//Win32 fix:
-			$new_file = str_replace( strtolower( str_replace( '\\', '/', $uploads['basedir'] ) ), $uploads['basedir'], $new_file );
-
+			$new_file = str_replace( '\\', '/', $new_file );
 	
 			// Insert attachment
 			$id = wp_insert_attachment( $attachment, $new_file, $post_id );
@@ -793,6 +812,23 @@ class HTML_Import extends WP_Importer {
 				wp_update_attachment_metadata( $id, $data );
 				$this->filearr[$id] = $file; // $file contains the original, absolute path to the file
 			}
+			
+			// Copied from post redirect (but use wp_get_attachment_url instead of  get_permalink)
+			$path=$file;
+			// find old path
+			if ( '' !== trim( $path ) ) {
+				$url = esc_url( $options['old_url'] );
+				$url = rtrim( $url, '/' );
+				if ( !empty( $url ) ) 
+					$old_path = str_replace( $options['root_directory'], $url, $path );
+				else $old_path = $path;
+			}
+			// add redirects from old to new path; store old path in custom field
+			if ( '' !== trim( $old_path )) {
+				$this->redirects .= "Redirect\t".$old_path."\t".wp_get_attachment_url( $id ) ."\t[R=301,NC,L]\n";
+				add_post_meta( $id, 'URL_before_HTML_Import', $old_path, true );
+			}
+			
 			
 		} // if attachment already exists
 		return $id;
@@ -804,7 +840,7 @@ class HTML_Import extends WP_Importer {
 		foreach ( $this->filearr as $id => $path ) {
 
 			$post = get_post( $id );
-			$content = preg_replace( '/(<img[^>]* )srcset=[\'"][^>\'"]+[\'"]/i', '$1', $post->post_content );
+			$content = preg_replace( '/(<img[^>]* )srcset=[\'"][^<>\'"]+[\'"]/i', '$1', $post->post_content );
 
 			wp_update_post( array(
 				'ID' => $id,
@@ -825,14 +861,14 @@ class HTML_Import extends WP_Importer {
 		$update = false;
 		
 		// find all src attributes
-		preg_match_all( '/<img[^>]* src=[\'"]?([^>\'" ]+)/i', $post->post_content, $matches );
+		preg_match_all( '/<img[^>]* src=[\'"]?([^><\'" ]+)/i', $post->post_content, $matches );
 		for ( $i=0; $i<count( $matches[0] ); $i++ ) {
 			$srcs[] = $matches[1][$i];
 		}
 		
 		// also check custom fields
 		$custom = get_post_meta( $id, '_ise_old_sidebar', true );
-		preg_match_all( '/<img[^>]* src=[\'"]?([^>\'" ]+)[\'"]/i', $custom, $matches );
+		preg_match_all( '/<img[^>]* src=[\'"]?([^><\'" ]+)[\'"]/i', $custom, $matches );
 		for ( $i=0; $i<count( $matches[0] ); $i++ ) {
 			$srcs[] = $matches[1][$i];
 		}
@@ -841,7 +877,7 @@ class HTML_Import extends WP_Importer {
 			$count = count( $srcs );
 			
 			echo "<p>";
-			printf( _n( 'Found %d image in <a href="%s">%s</a>. Importing... ', 'Found %d images in <a href="%s">%s</a>. Importing... ', $count, 'html-import-pages' ), $count, get_permalink( $post->ID ), $title );
+			printf( _n( 'Found %d image in <a href="%s">%s</a>. Importing... ', 'Found %d images in <a href="%s">%s</a>. Importing... ', $count, 'import-html-pages' ), $count, get_permalink( $post->ID ), $title );
 			foreach ( $srcs as $src ) {
 				// src="http://foo.com/images/foo"
 
@@ -905,8 +941,8 @@ class HTML_Import extends WP_Importer {
 		$update = false;
 		$mimes = explode( ',', $options['document_mimes'] );
 				
-		// find all href attributes
-		preg_match_all( '/<a[^>]* href=[\'"]?([^>\'" ]+)/i', $content, $matches );
+		// find all href attributes  
+		preg_match_all( '/<a[^>]* href=[\'"]?([^><#\'" ]+)/i', $content, $matches );
 		for ( $i=0; $i<count( $matches[0] ); $i++ ) {
 			$hrefs[] = $matches[1][$i];
 		}
@@ -914,7 +950,7 @@ class HTML_Import extends WP_Importer {
 			$count = count( $hrefs );
 			
 			echo "<p>";
-			printf( _n( 'Found %d link in <a href="%s">%s</a>. Checking file types... ', 'Found %d links in <a href="%s">%s</a>. Checking file types... ', $count, 'html-import-pages' ), $count, get_permalink( $post->ID ), $title );
+			printf( _n( 'Found %d link in <a href="%s">%s</a>. Checking file types... ', 'Found %d links in <a href="%s">%s</a>. Checking file types... ', $count, 'import-html-pages' ), $count, get_permalink( $post->ID ), $title );
 			
 			//echo '<p>Looking in '.get_permalink( $id ).'</p>';
 			$options = get_option( 'html_import' );
@@ -953,10 +989,11 @@ class HTML_Import extends WP_Importer {
 						// DEBUG
 						//echo '<p>Old link: '.$href.' Full path: '.$linkpath;
 						
-						$filename_parts = explode( ".",$linkpath );
+						$filename_noquery = explode( "?",$linkpath );
+						$filename_parts = explode( ".",$filename_noquery[0] );
 						$ext = strtolower( $filename_parts[count( $filename_parts ) - 1] );
 						
-						if ( in_array( $ext, $mimes ) ) {  // allowed upload types only
+						if ( in_array( $ext, $mimes ) ||  (in_array("*", $mimes) && !in_array($ext, $this->allowed)) ) {  // allowed upload types only
 							echo '<br />Importing '.ltrim( strrchr( $linkpath, '/' ), '/' ).'... ';
 							//  load the file from $linkpath
 							$fileid = $this->handle_import_media_file( $linkpath, $id );
@@ -1012,7 +1049,8 @@ class HTML_Import extends WP_Importer {
 		<h3><?php _e( 'All done!', 'import-html-pages' ); ?></h3>
 		<?php }
 		else _e( 'No posts were found with the URL_before_HTML_Import custom field. Could not search for links.', 'import-html-pages' );
-		// DEBUG
+		// DEBUG			var_dump($options);
+
 		//echo '<pre>'.print_r( $this->filearr, true ).'</pre>';
 	}
 	
@@ -1064,11 +1102,6 @@ class HTML_Import extends WP_Importer {
 			<?php
 			flush();
 			
-			if ( !empty( $this->redirects ) ) { ?>
-			<h3><?php _e( '.htaccess Redirects', 'import-html-pages' ); ?></h3>
-			<textarea id="import-result"><?php echo $this->redirects; ?></textarea>
-			<p><?php printf( __( 'If you need to <a href="%s">change your permalink structure</a>, you can <a href="%s">regenerate the redirects</a> ( or do it later from the <a href="%s">options screen</a> under Tools ).', 'import-html-pages' ), 'options-permalink.php', wp_nonce_url( 'admin.php?import=html&step=2', 'html_import_regenerate' ), 'options-general.php?page=html-import.php' ) ?></p>
-			<?php }
 		}
 		echo '<h3>';
 		printf( __( 'All done. <a href="%s">Have fun!</a>', 'import-html-pages' ),  'edit.php?post_type='.$posttype );
@@ -1076,6 +1109,14 @@ class HTML_Import extends WP_Importer {
 		flush();
 		// DEBUG
 //		echo '<pre>'.print_r( $this->filearr, true ).'</pre>';
+	}
+	
+	function print_redirects() {
+			if ( !empty( $this->redirects ) ) { ?>
+			<h3><?php _e( '.htaccess Redirects', 'import-html-pages' ); ?></h3>
+			<textarea id="import-result"><?php echo $this->redirects; ?></textarea>
+			<p><?php printf( __( 'If you need to <a href="%s">change your permalink structure</a>, you can <a href="%s">regenerate the redirects</a> ( or do it later from the <a href="%s">options screen</a> under Tools ).', 'import-html-pages' ), 'options-permalink.php', wp_nonce_url( 'admin.php?import=html&step=2', 'html_import_regenerate' ), 'options-general.php?page=html-import.php' ) ?></p>
+			<?php }
 	}
 	
 	function import() {
@@ -1129,9 +1170,10 @@ class HTML_Import extends WP_Importer {
 				$this->find_documents();
 			if ( isset( $options['fix_links'] ) && $options['fix_links'] )
 				$this->find_internal_links();
+			$this->print_redirects();
 		}
 		else {
-			_e( "Your file upload didn't work. Try again?", 'html-import-pages' );
+			_e( "Your file upload didn't work. Try again?", 'import-html-pages' );
 		}
 
 		do_action( 'import_done', 'html' );

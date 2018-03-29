@@ -6,8 +6,16 @@ Description: Imports well-formed static HTML files into WordPress posts or pages
 Version: 2.6
 Author: Stephanie Leary
 Author URI: http://sillybean.net/
+Text Domain: import-html-pages
+Domain Path: /languages/
 License: GPL 2
 */
+
+// Make sure translations are loaded before plugin registration
+load_plugin_textdomain( 'import-html-pages', false, dirname( plugin_basename( __FILE__ ) ) . '/languages/' );
+
+// Force description translation string (KEEP THIS IN SYNC with description field above !)
+if (0) $html_import_description = __('Imports well-formed static HTML files into WordPress posts or pages. Supports Dreamweaver templates and Word HTML cleanup. Visit the settings page to get started. See the <a href="http://sillybean.net/code/wordpress/html-import-2/user-guide/">User Guide</a> for details.');
 
 require_once ( 'html-importer.php' );
 require_once ( 'html-import-options.php' );
@@ -72,7 +80,7 @@ function html_import_add_pages() {
 	$text = '<p>'.sprintf( __( 'This is a complicated importer with lots of options. If you have never used this importer before, you should take a look at the <a href="%s">User Guide</a>.', 'import-html-pages' ), 'http://sillybean.net/downloads/html-import/user-guide.html' ).'</p>';
 	$text .= '<p>'.__( "You need to look through the first five tabs and save your settings before you run the importer. The sixth ( Tools ) contains links to some tools that are helpful after you've imported.", 'import-html-pages' ).'</p>';
 	
-	$text .= '<h3>'.__( 'Tips', 'html-import-pages' )."</h3>
+	$text .= '<h3>'.__( 'Tips', 'import-html-pages' )."</h3>
     <ol>
 		<li>" . __( "If there is already some content in this site, you should back up your database before you import.", 'import-html-pages' )."</li>        
 		<li>" . __( "Before you import, deactivate any crosspost or notification plugins.", 'import-html-pages' )."</li>
@@ -95,6 +103,7 @@ add_action( 'admin_menu', 'html_import_add_pages' );
 add_action( 'plugin_action_links_' . plugin_basename( __FILE__ ), 'html_import_plugin_actions' );
 function html_import_plugin_actions( $links ) {
 	$new_links = array();
-	$new_links[] = sprintf( '<a href="options-general.php?page=html-import.php">%s</a>', __( 'Settings', 'html-import' ) );
+	$new_links[] = sprintf( '<a href="options-general.php?page=html-import.php">%s</a>', __( 'Settings', 'import-html-pages' ) );
 	return array_merge( $new_links, $links );
 }
+

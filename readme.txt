@@ -95,6 +95,13 @@ No. The files must be on the same server as your WordPress installation. I have 
 
 == Changelog ==
 
+= Contribution from rpeyron =
+* Added French translation and translation fixes
+* Added '*' for all document types 
+* Added option to import media files in original folder structure
+* Added option to prefix import path
+* Added redirects for imported media files
+
 = 2.6 =
 * Removed ancient magic runtime quotes call, wow.
 * Checking for empty string instead of empty() to allow for directories named '0' or similar

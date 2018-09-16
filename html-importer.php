@@ -606,9 +606,10 @@ class HTML_Import extends WP_Importer {
 		
 		// see if the post already exists
 		// but don't bother printing this message if we're doing an index file; we know its parent already exists
-		if ( $post_id = post_exists( $my_post['post_title'], $my_post['post_content'], $my_post['post_date'] ) && basename( $path ) != $options['index_file'] )
+		if ( $post_id = post_exists( $my_post['post_title'], $my_post['post_content'], $my_post['post_date'] ) && basename( $path ) != $options['index_file'] ){
+			$this->table=array();
 			$this->table[] = "<tr><th class='error'>--</th><td colspan='3' class='error'> " . sprintf( __( "%s ( %s ) has already been imported", 'html-import-pages' ), $my_post['post_title'], $handle ) . "</td></tr>";
-		
+		}
 		// if we're doing hierarchicals and this is an index file of a subdirectory, instead of importing this as a separate page, update the content of the placeholder page we created for the directory
 		$index_files = explode( ',',$options['index_file'] );
 		if ( is_post_type_hierarchical( $options['type'] ) && dirname( $path ) != $options['root_directory'] && in_array( basename( $path ), $index_files ) ) {

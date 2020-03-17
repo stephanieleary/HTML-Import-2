@@ -445,7 +445,8 @@ class HTML_Import extends WP_Importer {
 					$filename = $this->filename;
 				else
 					$filename = basename( $path );
-				$my_post['post_name'] = substr( $filename,0,strrpos( $filename,'.' ) );
+				if($filename !== $options['index_file'])
+					$my_post['post_name'] = substr( $filename,0,strrpos( $filename,'.' ) );
 			}
 			
 			// post type
